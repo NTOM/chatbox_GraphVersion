@@ -633,7 +633,7 @@ function ConversationTreeViewInner({
   return (
     <div ref={containerRef} className={cn('w-full h-full flex', className)}>
       {/* 左侧：ReactFlow 画布 */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-gray-100 dark:bg-transparent">
         <div className="flex-1 relative">
           <ReactFlow
             nodes={nodes}
@@ -715,7 +715,8 @@ function ConversationTreeViewInner({
           className={cn(
             'flex-shrink-0 border-l',
             'bg-white dark:bg-gray-900',
-            'border-gray-200 dark:border-gray-700'
+            'border-gray-200 dark:border-gray-700',
+            'shadow-[-4px_0_12px_rgba(0,0,0,0.08)] dark:shadow-none'
           )}
         >
           <MessageDetailPanel

@@ -106,7 +106,8 @@ function UserNodeComponent({ data, selected: _rfSelected }: UserNodeProps) {
     <div
       className={cn(
         'w-[260px] rounded-lg border-2 p-3 transition-all relative group',
-        'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700',
+        'bg-white dark:bg-blue-900/30 border-blue-200 dark:border-blue-700',
+        'shadow-sm dark:shadow-none',
         data.isActivePath && 'ring-2 ring-blue-400 ring-offset-2 dark:ring-offset-gray-900',
         !data.isActivePath && 'opacity-70 dark:opacity-80',
         isSelected && 'border-blue-500',

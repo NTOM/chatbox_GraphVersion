@@ -51,13 +51,11 @@ export function MessageDetailDrawer({
 }: MessageDetailDrawerProps) {
   const { t } = useTranslation()
   const contentRef = useRef<HTMLDivElement>(null)
-  const {
-    enableMarkdownRendering,
-    enableLaTeXRendering,
-    enableMermaidRendering,
-    showTokenCount,
-    showWordCount,
-  } = useSettingsStore()
+  const enableMarkdownRendering = useSettingsStore((s) => s.enableMarkdownRendering)
+  const enableLaTeXRendering = useSettingsStore((s) => s.enableLaTeXRendering)
+  const enableMermaidRendering = useSettingsStore((s) => s.enableMermaidRendering)
+  const showTokenCount = useSettingsStore((s) => s.showTokenCount)
+  const showWordCount = useSettingsStore((s) => s.showWordCount)
   const setQuote = useUIStore((state) => state.setQuote)
   
   // 多模型配置

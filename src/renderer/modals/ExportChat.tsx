@@ -7,10 +7,12 @@ import type { ExportChatFormat, ExportChatScope } from '@/../shared/types'
 import { Modal } from '@/components/Overlay'
 import { currentSessionIdAtom } from '@/stores/atoms'
 import { exportSessionChat } from '@/stores/sessionActions'
+import { useViewModeStore } from '@/stores/viewModeStore'
 
 const ExportChat = NiceModal.create(() => {
   const modal = useModal()
   const { t } = useTranslation()
+  const viewMode = useViewModeStore((s) => s.viewMode)
   const [scope, setScope] = useState<ExportChatScope>('all_threads')
   const [format, setFormat] = useState<ExportChatFormat>('HTML')
 
@@ -46,10 +48,15 @@ const ExportChat = NiceModal.create(() => {
         </div>
         <Select
           label={t('Scope')}
-          data={['all_threads', 'current_thread'].map((scope) => ({
-            label: t((scope.charAt(0).toUpperCase() + scope.slice(1).toLowerCase()).split('_').join(' ')),
-            value: scope,
-          }))}
+          data={[
+            ...['all_threads', 'current_thread'].map((scope) => ({
+              label: t((scope.charAt(0).toUpperCase() + scope.slice(1).toLowerCase()).split('_').join(' ')),
+              value: scope,
+            })),
+            ...(viewMode === 'tree'
+              ? [{ label: t('Active path'), value: 'active_path' }]
+              : []),
+          ]}
           value={scope}
           onChange={(e) => e && setScope(e as ExportChatScope)}
         />

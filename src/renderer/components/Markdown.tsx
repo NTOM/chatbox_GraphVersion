@@ -128,6 +128,11 @@ function Markdown(props: {
               />
             )
           },
+          table: ({ node, ...props }) => (
+            <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+              <table {...props} />
+            </div>
+          ),
           a: ({ node, ...props }) => (
             <a
               {...props}

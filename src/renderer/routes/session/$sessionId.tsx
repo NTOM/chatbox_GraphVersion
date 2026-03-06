@@ -186,6 +186,23 @@ function RouteComponent() {
           onDelete={() => window.dispatchEvent(new CustomEvent('tree-toolbar-delete'))}
           onAutoLayout={() => window.dispatchEvent(new CustomEvent('tree-toolbar-auto-layout'))}
           onUndo={() => window.dispatchEvent(new CustomEvent('tree-toolbar-undo'))}
+          onExportActivePath={() => {
+            import('@/lib/conversation-tree-adapter').then(({ getActivePathMessages }) => {
+              import('@/lib/format-chat').then(({ formatChatAsMarkdown }) => {
+                import('@/platform').then(({ default: platform }) => {
+                  const messages = getActivePathMessages(currentSession)
+                  const thread = {
+                    id: currentSession.id,
+                    name: currentSession.threadName || currentSession.name,
+                    messages,
+                    createdAt: Date.now(),
+                  }
+                  const content = formatChatAsMarkdown(currentSession.name, [thread])
+                  platform.exporter.exportTextFile(`${currentSession.name}_active_path.md`, content)
+                })
+              })
+            })
+          }}
           canFocus={interactionMode === 'click' ? !!selectedNodeId : selectedNodeIds.length > 0}
           canDelete={interactionMode === 'click' ? !!selectedNodeId : selectedNodeIds.length > 0}
           canUndo={treeUndoState !== null && treeUndoState.sessionId === currentSession.id}

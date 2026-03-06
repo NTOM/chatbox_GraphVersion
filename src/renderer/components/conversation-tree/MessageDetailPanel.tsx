@@ -67,13 +67,11 @@ export function MessageDetailPanel({
   const contentRef = useRef<HTMLDivElement>(null)
   const resizeRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
-  const {
-    enableMarkdownRendering,
-    enableLaTeXRendering,
-    enableMermaidRendering,
-    showTokenCount,
-    showWordCount,
-  } = useSettingsStore()
+  const enableMarkdownRendering = useSettingsStore((s) => s.enableMarkdownRendering)
+  const enableLaTeXRendering = useSettingsStore((s) => s.enableLaTeXRendering)
+  const enableMermaidRendering = useSettingsStore((s) => s.enableMermaidRendering)
+  const showTokenCount = useSettingsStore((s) => s.showTokenCount)
+  const showWordCount = useSettingsStore((s) => s.showWordCount)
   const setQuote = useUIStore((state) => state.setQuote)
   
   // 多模型配置
@@ -204,7 +202,7 @@ export function MessageDetailPanel({
   }, [onQuote, setQuote])
 
   // 空状态
-  if (!message) {
+  if (!message || !liveMessage) {
     return (
       <div className={cn(
         'flex flex-col items-center justify-center h-full',
@@ -330,7 +328,7 @@ export function MessageDetailPanel({
 
         {/* 消息内容区域 */}
         <ScrollArea className="flex-1" offsetScrollbars>
-          <div ref={contentRef} className="relative px-4 py-3">
+          <div ref={contentRef} className="relative px-4 py-3 max-w-full overflow-hidden">
             <TextSelectionQuote
               containerRef={contentRef}
               onQuote={handleTextSelectionQuote}

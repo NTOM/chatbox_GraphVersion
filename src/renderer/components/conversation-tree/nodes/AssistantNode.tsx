@@ -113,7 +113,8 @@ function AssistantNodeComponent({ data, selected: _rfSelected }: AssistantNodePr
     <div
       className={cn(
         'w-[260px] rounded-lg border-2 p-3 transition-all relative group',
-        'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700',
+        'bg-white dark:bg-green-900/30 border-green-200 dark:border-green-700',
+        'shadow-sm dark:shadow-none',
         data.isActivePath && 'ring-2 ring-green-400 ring-offset-2 dark:ring-offset-gray-900',
         !data.isActivePath && 'opacity-70 dark:opacity-80',
         hasError && 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/30',

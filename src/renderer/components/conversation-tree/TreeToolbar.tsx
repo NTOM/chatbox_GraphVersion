@@ -13,6 +13,7 @@ import {
   IconTrash, 
   IconLayoutDistributeVertical,
   IconArrowBackUp,
+  IconFileExport,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import { ScalableIcon } from '@/components/ScalableIcon'
@@ -36,6 +37,8 @@ export interface TreeToolbarProps {
   onAutoLayout: () => void
   /** 撤销删除 */
   onUndo: () => void
+  /** 导出当前激活路径 */
+  onExportActivePath?: () => void
   /** 是否有选中节点可聚焦 */
   canFocus: boolean
   /** 是否有选中节点可删除 */
@@ -56,6 +59,7 @@ function TreeToolbarComponent({
   onDelete,
   onAutoLayout,
   onUndo,
+  onExportActivePath,
   canFocus,
   canDelete,
   canUndo,
@@ -139,6 +143,20 @@ function TreeToolbarComponent({
             <ScalableIcon icon={IconLayoutDistributeVertical} size={22} strokeWidth={1.8} />
           </ActionIcon>
         </Tooltip>
+
+        {/* 导出激活路径 */}
+        {onExportActivePath && (
+          <Tooltip label={t('Export active path as Markdown')} withArrow position="top">
+            <ActionIcon
+              size={24}
+              variant="subtle"
+              color="chatbox-secondary"
+              onClick={onExportActivePath}
+            >
+              <ScalableIcon icon={IconFileExport} size={22} strokeWidth={1.8} />
+            </ActionIcon>
+          </Tooltip>
+        )}
 
         {/* 撤销删除按钮 */}
         <Tooltip label={t('Undo delete')} withArrow position="top">

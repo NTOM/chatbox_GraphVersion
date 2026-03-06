@@ -591,48 +591,58 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
       if (sessionType === 'picture') {
         return
       }
-      if (event.clipboardData?.items) {
-        // 对于 Doc/PPT/XLS 等文件中的内容，粘贴时一般会有 4 个 items，分别是 text 文本、html、某格式和图片
-        // 因为 getAsString 为异步操作，无法根据 items 中的内容来定制不同的粘贴行为，因此这里选择了最简单的做法：
-        // 保持默认的粘贴行为，这时候会粘贴从文档中复制的文本和图片。我认为应该保留图片，因为文档中的表格、图表等图片信息也很重要，很难通过文本格式来表述。
-        // 仅在只粘贴图片或文件时阻止默认行为，防止插入文件或图片的名字
-        let hasText = false
-        for (let i = 0; i < event.clipboardData.items.length; i++) {
-          const item = event.clipboardData.items[i]
-          if (item.kind === 'file') {
-            // Insert files and images
-            const file = item.getAsFile()
-            if (file) {
-              insertFiles([file])
-            }
-            continue
-          }
-          hasText = true
-          if (item.kind === 'string' && item.type === 'text/plain') {
-            // 插入链接：如果复制的是链接，则插入链接
-            item.getAsString((text) => {
-              const raw = text.trim()
-              if (raw.startsWith('http://') || raw.startsWith('https://')) {
-                const urls = raw
-                  .split(/\s+/)
-                  .map((url) => url.trim())
-                  .filter((url) => url.startsWith('http://') || url.startsWith('https://'))
-                insertLinks(urls)
-              }
-              if (pasteLongTextAsAFile && raw.length > 3000) {
-                const file = new File([text], `pasted_text_${attachments?.length || 0}.txt`, {
-                  type: 'text/plain',
-                })
+      try {
+        if (event.clipboardData?.items) {
+          // 对于 Doc/PPT/XLS 等文件中的内容，粘贴时一般会有 4 个 items，分别是 text 文本、html、某格式和图片
+          // 因为 getAsString 为异步操作，无法根据 items 中的内容来定制不同的粘贴行为，因此这里选择了最简单的做法：
+          // 保持默认的粘贴行为，这时候会粘贴从文档中复制的文本和图片。我认为应该保留图片，因为文档中的表格、图表等图片信息也很重要，很难通过文本格式来表述。
+          // 仅在只粘贴图片或文件时阻止默认行为，防止插入文件或图片的名字
+          let hasText = false
+          for (let i = 0; i < event.clipboardData.items.length; i++) {
+            const item = event.clipboardData.items[i]
+            if (item.kind === 'file') {
+              // Insert files and images
+              const file = item.getAsFile()
+              if (file) {
                 insertFiles([file])
-                setMessageInput(messageInput) // 删除掉默认粘贴进去的长文本
               }
-            })
+              continue
+            }
+            hasText = true
+            if (item.kind === 'string' && item.type === 'text/plain') {
+              // 插入链接：如果复制的是链接，则插入链接
+              item.getAsString((text) => {
+                try {
+                  const raw = text.trim()
+                  if (raw.startsWith('http://') || raw.startsWith('https://')) {
+                    const urls = raw
+                      .split(/\s+/)
+                      .map((url) => url.trim())
+                      .filter((url) => url.startsWith('http://') || url.startsWith('https://'))
+                    if (urls.length > 0) {
+                      insertLinks(urls)
+                    }
+                  }
+                  if (pasteLongTextAsAFile && raw.length > 3000) {
+                    const file = new File([text], `pasted_text_${attachments?.length || 0}.txt`, {
+                      type: 'text/plain',
+                    })
+                    insertFiles([file])
+                    setMessageInput(messageInput) // 删除掉默认粘贴进去的长文本
+                  }
+                } catch (e) {
+                  console.warn('[onPaste] Error processing string item:', e)
+                }
+              })
+            }
+          }
+          // 如果没有任何文本，则说明只是复制了图片或文件。这里阻止默认行为，防止插入文件或图片的名字
+          if (!hasText) {
+            event.preventDefault()
           }
         }
-        // 如果没有任何文本，则说明只是复制了图片或文件。这里阻止默认行为，防止插入文件或图片的名字
-        if (!hasText) {
-          event.preventDefault()
-        }
+      } catch (e) {
+        console.warn('[onPaste] Unhandled paste error:', e)
       }
     }
 

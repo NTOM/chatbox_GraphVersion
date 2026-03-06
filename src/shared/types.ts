@@ -142,7 +142,7 @@ export type MessageTokenCountResult = { id: string; tokenCountMap: TokenCountMap
 
 export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced' | 'extension' | 'mcp'
 
-export type ExportChatScope = 'all_threads' | 'current_thread'
+export type ExportChatScope = 'all_threads' | 'current_thread' | 'active_path'
 
 export type ExportChatFormat = 'Markdown' | 'TXT' | 'HTML'
 

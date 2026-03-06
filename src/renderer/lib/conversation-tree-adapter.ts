@@ -369,6 +369,56 @@ export function getChildNodeIds(tree: ConversationTree, nodeId: string): string[
 }
 
 /**
+ * 获取当前激活路径上的有序消息列表
+ * 从根节点（含 system prompt）沿着活跃分支遍历到叶子节点
+ */
+export function getActivePathMessages(session: Session): Message[] {
+  if (!session.messages || session.messages.length === 0) {
+    return []
+  }
+
+  const result: Message[] = []
+
+  // 遍历主消息链
+  for (const message of session.messages) {
+    result.push(message)
+
+    // 如果有分支，沿着活跃分支继续
+    const forkData = session.messageForksHash?.[message.id]
+    if (forkData && forkData.lists.length > 0) {
+      const activeBranch = forkData.lists[forkData.position]
+      if (activeBranch) {
+        collectActiveBranchMessages(session, activeBranch.messages, result)
+      }
+    }
+  }
+
+  return result
+}
+
+/**
+ * 递归收集活跃分支中的消息
+ */
+function collectActiveBranchMessages(
+  session: Session,
+  branchMessages: Message[],
+  result: Message[]
+): void {
+  for (const message of branchMessages) {
+    result.push(message)
+
+    // 检查是否有嵌套分支
+    const forkData = session.messageForksHash?.[message.id]
+    if (forkData && forkData.lists.length > 0) {
+      const activeBranch = forkData.lists[forkData.position]
+      if (activeBranch) {
+        collectActiveBranchMessages(session, activeBranch.messages, result)
+      }
+    }
+  }
+}
+
+/**
  * 调试用：打印树结构
  */
 export function debugPrintTree(tree: ConversationTree): void {

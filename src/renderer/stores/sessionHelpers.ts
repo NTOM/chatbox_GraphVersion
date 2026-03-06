@@ -360,12 +360,24 @@ export function constructUserMessage(
 
 export async function exportChat(session: Session, scope: ExportChatScope, format: ExportChatFormat) {
   const threads: SessionThread[] = scope === 'all_threads' ? [...(session.threads || [])] : []
-  threads.push({
-    id: session.id,
-    name: session.threadName || session.name,
-    messages: session.messages,
-    createdAt: Date.now(),
-  })
+
+  if (scope === 'active_path') {
+    const { getActivePathMessages } = await import('@/lib/conversation-tree-adapter')
+    const activeMessages = getActivePathMessages(session)
+    threads.push({
+      id: session.id,
+      name: session.threadName || session.name,
+      messages: activeMessages,
+      createdAt: Date.now(),
+    })
+  } else {
+    threads.push({
+      id: session.id,
+      name: session.threadName || session.name,
+      messages: session.messages,
+      createdAt: Date.now(),
+    })
+  }
 
   if (format === 'Markdown') {
     const content = formatChatAsMarkdown(session.name, threads)
