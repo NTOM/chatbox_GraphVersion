@@ -25,6 +25,8 @@ import LayoutExpand from '../icons/LayoutExpand'
 import LayoutShrink from '../icons/LayoutShrink'
 import { ScalableIcon } from '../common/ScalableIcon'
 import UpdateAvailableButton from '../UpdateAvailableButton'
+// [GitLine] Tree view mode toggle
+import { ViewModeSwitch } from '../conversation-tree/ViewModeSwitch'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -100,6 +102,9 @@ export default function Toolbar({ sessionId }: { sessionId: string }) {
           {widthFull ? <LayoutExpand strokeWidth={1.8} /> : <LayoutShrink strokeWidth={1.8} />}
         </ActionIcon>
       )}
+
+      {/* [GitLine] Tree/List view mode toggle */}
+      <ViewModeSwitch />
 
       <ActionIcon variant="subtle" size={28} color="chatbox-secondary" onClick={() => setThreadHistoryDrawerOpen(true)}>
         <svg

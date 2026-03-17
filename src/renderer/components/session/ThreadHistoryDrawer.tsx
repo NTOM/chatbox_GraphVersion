@@ -72,7 +72,6 @@ export default function ThreadHistoryDrawer({ session }: { session: Session }) {
         language === 'ar' ? { sx: { direction: 'rtl', overflowY: 'initial' } } : { sx: { overflowY: 'initial' } }
       }
       disableSwipeToOpen={CHATBOX_BUILD_PLATFORM !== 'ios'} // 只在iOS设备上启用SwipeToOpen
-      disableEnforceFocus={true} // 关闭 focus trap，避免在侧边栏打开时弹出的 modal 中 input 无法点击
     >
       <Flex align="center" justify="space-between" className="px-sm py-xs">
         <Text size="md" fw={600}>

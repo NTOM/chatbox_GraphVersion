@@ -93,6 +93,8 @@ import ProviderImageIcon from '../icons/ProviderImageIcon'
 import KnowledgeBaseMenu from '../knowledge-base/KnowledgeBaseMenu'
 import ModelSelector from '../ModelSelector'
 import MCPMenu from '../mcp/MCPMenu'
+// [GitLine] Multi-model mode toggle
+import { MultiModelToggle } from '../MultiModelToggle'
 import { FileMiniCard, ImageMiniCard, LinkMiniCard } from './Attachments'
 import { ImageUploadInput } from './ImageUploadInput'
 import {
@@ -1177,7 +1179,7 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
                 )}
               </Flex>
 
-              {/* Right Group: Token Count + Model Selector */}
+              {/* Right Group: Token Count + Multi-Model Toggle + Model Selector */}
               <Flex align="center" gap={0}>
                 <TokenCountMenu
                   currentInputTokens={currentInputTokens}
@@ -1211,6 +1213,9 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
                     </Text>
                   </Flex>
                 </TokenCountMenu>
+
+                {/* [GitLine] Multi-model mode toggle */}
+                <MultiModelToggle size={28} iconSize={toolbarIconSize} />
 
                 {/* Model Selector */}
                 <Tooltip

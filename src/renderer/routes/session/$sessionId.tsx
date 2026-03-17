@@ -15,6 +15,9 @@ import { lastUsedModelStore } from '@/stores/lastUsedModelStore'
 import * as scrollActions from '@/stores/scrollActions'
 import { modifyMessage, removeCurrentThread, startNewThread, submitNewUserMessage } from '@/stores/sessionActions'
 import { getAllMessageList } from '@/stores/sessionHelpers'
+// [GitLine] Tree view imports
+import { useViewModeStore } from '@/stores/viewModeStore'
+import { ConversationTreeView } from '@/components/conversation-tree'
 
 export const Route = createFileRoute('/session/$sessionId')({
   component: RouteComponent,
@@ -27,6 +30,8 @@ function RouteComponent() {
   const { session: currentSession, isFetching } = useSession(currentSessionId)
   const setLastUsedChatModel = useStore(lastUsedModelStore, (state) => state.setChatModel)
   const setLastUsedPictureModel = useStore(lastUsedModelStore, (state) => state.setPictureModel)
+  // [GitLine] Read current view mode
+  const viewMode = useViewModeStore((s) => s.viewMode)
 
   const currentMessageList = useMemo(() => (currentSession ? getAllMessageList(currentSession) : []), [currentSession])
   const lastGeneratingMessage = useMemo(
@@ -154,8 +159,15 @@ function RouteComponent() {
     <div className="flex flex-col h-full">
       <Header session={currentSession} />
 
-      {/* MessageList 设置 key，确保每个 session 对应新的 MessageList 实例 */}
-      <MessageList ref={messageListRef} key={`message-list${currentSessionId}`} currentSession={currentSession} />
+      {/* [GitLine] Conditional rendering: tree view or list view */}
+      {viewMode === 'tree' ? (
+        <ConversationTreeView session={currentSession} />
+      ) : (
+        <>
+          {/* MessageList 设置 key，确保每个 session 对应新的 MessageList 实例 */}
+          <MessageList ref={messageListRef} key={`message-list${currentSessionId}`} currentSession={currentSession} />
+        </>
+      )}
 
       {/* <ScrollButtons /> */}
       <ErrorBoundary name="session-inputbox">
