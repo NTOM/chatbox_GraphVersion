@@ -178,3 +178,8 @@ electron-builder.env
 
 .env.sentry-build-plugin
 .sisyphus/
+
+# develop
+.codebuddy
+.specify
+.tools

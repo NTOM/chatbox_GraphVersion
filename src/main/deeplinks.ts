@@ -1,8 +1,9 @@
 import type { BrowserWindow } from 'electron'
 import log from 'electron-log/main'
+import { APP_PROTOCOL_SCHEME_BASE } from './appIdentity'
 
 export function handleDeepLink(mainWindow: BrowserWindow, link: string) {
-  const normalizedLink = link.replace(/^chatbox-dev:\/\//, 'chatbox://')
+  const normalizedLink = link.replace(new RegExp(`^${APP_PROTOCOL_SCHEME_BASE}-dev://`), `${APP_PROTOCOL_SCHEME_BASE}://`)
   const url = new URL(normalizedLink)
 
   console.log('🔗 Parsed URL:', { hostname: url.hostname, pathname: url.pathname, params: url.searchParams.toString() })

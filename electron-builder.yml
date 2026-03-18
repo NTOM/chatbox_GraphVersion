@@ -1,5 +1,6 @@
-productName: Chatbox
-appId: xyz.chatboxapp.app
+productName: ChatboxTree
+appId: xyz.chatboxapp.tree
+executableName: ChatboxTree
 asar: true
 asarUnpack:
   - "**\\*.{node,dll}"
@@ -48,7 +49,6 @@ win:
         - arm64
   verifyUpdateCodeSignature: false
   artifactName: ${productName}-${version}-Setup.${ext}
-  sign: ./custom_win_sign.js
   signingHashAlgorithms:
     - sha256
 

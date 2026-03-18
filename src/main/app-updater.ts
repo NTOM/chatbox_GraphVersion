@@ -1,4 +1,5 @@
 import { autoUpdater } from 'electron-updater'
+import { APP_DISPLAY_NAME, ENABLE_AUTO_UPDATE } from './appIdentity'
 import { getSettings } from './store-node'
 import { getLogger } from './util'
 
@@ -8,6 +9,11 @@ export class AppUpdater {
   constructor(onUpdateDownloaded: () => void) {
     log.transports.file.level = 'info'
     autoUpdater.logger = log
+
+    if (!ENABLE_AUTO_UPDATE) {
+      log.info(`[${APP_DISPLAY_NAME}] auto update disabled for local validation build`)
+      return
+    }
 
     autoUpdater.once('update-downloaded', (event) => {
       // Notify renderer process about the update

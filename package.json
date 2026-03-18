@@ -1,6 +1,6 @@
 {
   "name": "xyz.chatboxapp.ce",
-  "productName": "xyz.chatboxapp.ce",
+  "productName": "ChatboxTree",
   "version": "0.0.1",
   "engines": {
     "node": ">=20.0.0 <23.0.0",
@@ -8,7 +8,7 @@
   },
   "private": true,
   "description": "A desktop client for multiple cutting-edge AI models",
-  "main": "out/main/main.js",
+  "main": "out/main/bootstrap.js",
   "scripts": {
     "build": "electron-vite build",
     "build:main": "electron-vite build",

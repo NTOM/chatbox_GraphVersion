@@ -88,7 +88,7 @@ export default defineConfig(({ mode }) => {
       build: {
         outDir: isProduction ? 'release/app/dist/main' : undefined,
         lib: {
-          entry: resolve(__dirname, 'src/main/main.ts'),
+          entry: resolve(__dirname, 'src/main/bootstrap.ts'),
         },
         sourcemap: isProduction ? 'hidden' : true,
         minify: isProduction,

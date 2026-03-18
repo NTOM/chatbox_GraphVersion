@@ -1,4 +1,5 @@
 import AutoLaunch from 'auto-launch'
+import { APP_DISPLAY_NAME } from './appIdentity'
 import { getSettings } from './store-node'
 
 // 开机自启动
@@ -6,7 +7,7 @@ let _autoLaunch: AutoLaunch | null = null
 
 export function get() {
   if (!_autoLaunch) {
-    _autoLaunch = new AutoLaunch({ name: 'Chatbox' })
+    _autoLaunch = new AutoLaunch({ name: APP_DISPLAY_NAME })
   }
   return _autoLaunch
 }

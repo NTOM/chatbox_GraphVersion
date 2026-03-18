@@ -1,6 +1,7 @@
 import * as store from './store-node'
 import { app } from 'electron'
 import { ofetch } from 'ofetch'
+import { APP_RUNTIME_PACKAGE_NAME } from './appIdentity'
 
 // Measurement Protocol 参考文档
 // https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?hl=zh-cn&client_type=gtag
@@ -24,7 +25,7 @@ export async function event(name: string, params: any = {}) {
           {
             name: name,
             params: {
-              app_name: 'chatbox',
+              app_name: APP_RUNTIME_PACKAGE_NAME,
               app_version: app.getVersion(),
               chatbox_platform_type: 'desktop',
               chatbox_platform: 'desktop',

@@ -19,6 +19,14 @@ import path from 'path'
 import * as sourceMapSupport from 'source-map-support'
 import type { ShortcutSetting } from 'src/shared/types'
 import * as analystic from './analystic-node'
+import {
+  APP_DISPLAY_NAME,
+  APP_PROTOCOL_PREFIXES,
+  APP_PROTOCOL_SCHEME,
+  APP_USER_MODEL_ID,
+  ENABLE_SINGLE_INSTANCE_LOCK,
+} from './appIdentity'
+import { AppUpdater } from './app-updater'
 import * as autoLauncher from './autoLauncher'
 import { handleDeepLink } from './deeplinks'
 import { parseFile } from './file-parser'
@@ -43,10 +51,9 @@ const knowledgeBaseInitPromise = import('./knowledge-base/index.js')
     log.error('[KB] Failed to initialize knowledge base during bootstrap:', error)
   })
 
-// 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
-// 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
+// 显式设置 AUMID，确保 ChatboxTree 与原版在 Windows 上的任务栏/通知身份分离
 if (process.platform === 'win32') {
-  app.setAppUserModelId(app.name)
+  app.setAppUserModelId(APP_USER_MODEL_ID)
 }
 
 const RESOURCES_PATH = app.isPackaged
@@ -57,18 +64,19 @@ const getAssetPath = (...paths: string[]): string => {
   return path.join(RESOURCES_PATH, ...paths)
 }
 
-// 开发环境使用 chatbox-dev:// 协议，避免和正式版冲突
-const PROTOCOL_SCHEME = process.defaultApp ? 'chatbox-dev' : 'chatbox'
+const findDeepLinkUrl = (args: string[]) => {
+  return args.find((arg) => APP_PROTOCOL_PREFIXES.some((prefix) => arg.startsWith(prefix)))
+}
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient(PROTOCOL_SCHEME, process.execPath, [path.resolve(process.argv[1])])
+    app.setAsDefaultProtocolClient(APP_PROTOCOL_SCHEME, process.execPath, [path.resolve(process.argv[1])])
   }
 } else {
-  app.setAsDefaultProtocolClient(PROTOCOL_SCHEME)
+  app.setAsDefaultProtocolClient(APP_PROTOCOL_SCHEME)
 }
 
-console.log(`📱 URL Scheme registered: ${PROTOCOL_SCHEME}://`)
+console.log(`📱 ${APP_DISPLAY_NAME} URL Scheme registered: ${APP_PROTOCOL_SCHEME}://`)
 
 // --------- 全局变量 ---------
 
@@ -179,7 +187,7 @@ function createTray() {
       accelerator: 'Command+Q',
     },
   ])
-  tray.setToolTip('Chatbox')
+  tray.setToolTip(APP_DISPLAY_NAME)
   tray.setContextMenu(contextMenu)
   tray.on('double-click', showOrHideWindow)
   return tray
@@ -387,7 +395,7 @@ if (!gotTheLock) {
 } else {
   app.on('second-instance', async (event, commandLine, workingDirectory) => {
     // on windows and linux, the deep link is passed in the command line
-    const url = commandLine.find((arg) => arg.startsWith('chatbox://') || arg.startsWith('chatbox-dev://'))
+    const url = findDeepLinkUrl(commandLine)
 
     if (url) {
       // Deep Link 场景：总是显示并聚焦窗口
@@ -441,7 +449,7 @@ if (!gotTheLock) {
       // 处理启动时的 Deep Link (Windows/Linux)
       // macOS 会通过 open-url 事件处理，不需要在这里处理
       if (process.platform !== 'darwin') {
-        const url = process.argv.find((arg) => arg.startsWith('chatbox://') || arg.startsWith('chatbox-dev://'))
+        const url = findDeepLinkUrl(process.argv)
         if (url && mainWindow) {
           // 确保窗口加载完成后再处理 Deep Link
           if (mainWindow.webContents.isLoading()) {
