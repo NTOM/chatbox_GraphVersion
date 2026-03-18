@@ -158,6 +158,7 @@ node_modules
 
 release/app/dist
 release/build
+release/build-chatboxtree
 .erb/dll
 
 .idea

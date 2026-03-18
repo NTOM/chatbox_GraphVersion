@@ -1,6 +1,6 @@
 {
-  "name": "xyz.chatboxapp.ce",
-  "productName": "xyz.chatboxapp.ce",
+  "name": "chatboxtree",
+  "productName": "ChatboxTree",
   "version": "1.19.0",
   "description": "A desktop client for multiple cutting-edge AI models",
   "author": {
@@ -8,7 +8,7 @@
     "email": "hi@chatboxai.com",
     "url": "https://github.com/chatboxai"
   },
-  "main": "./dist/main/main.js",
+  "main": "./dist/main/bootstrap.js",
   "scripts": {
     "rebuild": "node ../../.erb/scripts/electron-rebuild.cjs",
     "postinstall": "pnpm run rebuild && pnpm run link-modules",
